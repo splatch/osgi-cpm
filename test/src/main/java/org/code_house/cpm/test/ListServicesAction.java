@@ -1,5 +1,7 @@
 package org.code_house.cpm.test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
@@ -23,6 +25,14 @@ public class ListServicesAction implements PrivilegedExceptionAction<String> {
 
     public String run() throws Exception {
         String result = "";
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("file.txt"));
+            result += "First line of file " + reader.readLine() + "\n";
+            reader.close();
+        } catch (Exception e) {
+            result += "access denied to file.txt " + e.getMessage() + "\n";
+        }
+
         AccessControlContext ac = AccessController.getContext();
         result += "Access control context " + ac + " ";
         if (ac.getDomainCombiner() != null) {
@@ -60,6 +70,19 @@ public class ListServicesAction implements PrivilegedExceptionAction<String> {
     }
 
     private String grantCheck(ServicePermission servicePermission) {
+        return "access controller " + grantCheckController(servicePermission) + ", securty manager " + grantCheckSM(servicePermission);
+    }
+
+    private String grantCheckSM(ServicePermission servicePermission) {
+        try {
+            System.getSecurityManager().checkPermission(servicePermission);
+            return "allowed";
+        } catch (Exception e) {
+            return "denied";
+        }
+    }
+
+    private String grantCheckController(ServicePermission servicePermission) {
         try {
             AccessController.checkPermission(servicePermission);
             return "allowed";

@@ -29,7 +29,7 @@ public class SubjectCondition implements Condition {
     public boolean isSatisfied() {
         AccessControlContext ctx = AccessController.getContext();
         if ("org.code-house.cpm.test".equals(bundle.getSymbolicName())) {
-            System.out.println(ctx + " " + ctx.getDomainCombiner());
+            System.out.println(ctx + " " + ctx.getDomainCombiner() + " " + System.getSecurityManager());
         }
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {

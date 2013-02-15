@@ -38,7 +38,10 @@ public class Activator implements BundleActivator {
             String line = null;
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((line = reader.readLine()) != null) {
-                buffer.append(line);
+                line = line.trim();
+                if (!line.startsWith("#")) {
+                    buffer.append(line).append("\n");
+                }
             }
 
             String condition = buffer.toString();
