@@ -1,0 +1,3 @@
+ALLOW {
+    (java.security.AllPermission "*" "*")
+} "Keep other permissions"

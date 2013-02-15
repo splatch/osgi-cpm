@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<features name="cpm-${project.version}">
+
+    <feature name="cpm" version="${project.version}" description="Code-House CPM Assembly">
+        <feature>framework-extension</feature>
+        <feature version="${project.version}">condition</feature>
+        <feature version="${project.version}">admin</feature>
+        <feature version="${project.version}">jaas</feature>
+        <feature version="${project.version}">test</feature>
+    </feature>
+
+    <feature name="framework-extension">
+        <bundle>mvn:org.apache.felix/org.apache.felix.framework.security/${felix-security.version}</bundle>
+    </feature>
+
+    <feature name="condition" version="${project.version}" description="CPM Custom Condition">
+        <bundle>mvn:org.code-house.cpm/org.code-house.cpm.condition/${project.version}</bundle>
+    </feature>
+
+    <feature name="admin" version="${project.version}" description="CPM Admin">
+        <bundle>mvn:org.code-house.cpm/org.code-house.cpm.admin/${project.version}</bundle>
+    </feature>
+
+    <feature name="jaas" version="${project.version}" description="JAAS Login Modules">
+        <bundle>mvn:org.code-house.cpm/org.code-house.cpm.jaas/${project.version}</bundle>
+    </feature>
+
+    <feature name="test" version="${project.version}" description="CPM Test">
+        <feature>http-whiteboard</feature>
+        <bundle>mvn:org.code-house.cpm/org.code-house.cpm.test/${project.version}</bundle>
+    </feature>
+
+</features>
+

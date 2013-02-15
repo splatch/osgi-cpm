@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.code-house</groupId>
+        <artifactId>cpm</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.code-house.cpm</groupId>
+    <artifactId>org.code-house.cpm.admin</artifactId>
+    <name>Code-House :: CPM :: Security Admin</name>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            !org.code_house.cpm.admin,
+                            *
+                        </Import-Package>
+                        <Private-Package>org.code_house.cpm.admin</Private-Package>
+                        <Bundle-Activator>org.code_house.cpm.admin.Activator</Bundle-Activator>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
