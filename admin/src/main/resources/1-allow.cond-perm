@@ -1,4 +1,0 @@
-ALLOW {
-    [org.code_house.cpm.condition.SubjectCondition]
-    (org.osgi.framework.ServicePermission "javax.servlet.http.HttpServlet" "get")
-} "Grant access for all Subjects/Principal"

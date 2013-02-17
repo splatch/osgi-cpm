@@ -1,17 +1,19 @@
 package org.code_house.cpm.admin;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.xml.bind.JAXB;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.condpermadmin.ConditionInfo;
 import org.osgi.service.condpermadmin.ConditionalPermissionAdmin;
 import org.osgi.service.condpermadmin.ConditionalPermissionInfo;
 import org.osgi.service.condpermadmin.ConditionalPermissionUpdate;
+import org.osgi.service.permissionadmin.PermissionInfo;
 
 public class Activator implements BundleActivator {
 
@@ -24,29 +26,39 @@ public class Activator implements BundleActivator {
 
         ConditionalPermissionUpdate update = cpm.newConditionalPermissionUpdate();
 
-        for (ConditionalPermissionInfo info : (List<ConditionalPermissionInfo>) update.getConditionalPermissionInfos()) {
+        List permissionInfos = update.getConditionalPermissionInfos();
+        for (ConditionalPermissionInfo info : (List<ConditionalPermissionInfo>) permissionInfos) {
             System.out.println("Existing permission " + info);
         }
         System.out.println("Removing existing permissions");
-        update.getConditionalPermissionInfos().clear();
+        permissionInfos.clear();
 
-        Enumeration<URL> entries = context.getBundle().findEntries("/", "*.cond-perm", false);
-        while (entries.hasMoreElements()) {
-            URL url = entries.nextElement();
-
-            StringBuilder buffer = new StringBuilder();
-            String line = null;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!line.startsWith("#")) {
-                    buffer.append(line).append("\n");
+        Enumeration<URL> entries = context.getBundle().findEntries("/", "*.xml", false);
+        if (entries != null) {
+            while (entries.hasMoreElements()) {
+                URL url = entries.nextElement();
+                Policies policies = JAXB.unmarshal(url, Policies.class);
+                for (Policy policy : policies.getPolicy()) {
+                    for (ConditionContainer container : policy.getAllowOrDeny()) {
+                        ConditionInfo[] conditions = new ConditionInfo[container.getCondition().size()];
+                        for (int i = 0; i < conditions.length; i++) {
+                            Condition condition = container.getCondition().get(i);
+                            List<String> arguments = condition.getArgument();
+                            conditions[i] = new ConditionInfo(condition.getClazz(), arguments.toArray(new String[arguments.size()]));
+                        }
+                        PermissionInfo[] permissions = new PermissionInfo[container.getPermission().size()];
+                        for (int i = 0; i < permissions.length; i++) {
+                            Permission permission = container.getPermission().get(i);
+                            permissions[i] = new PermissionInfo(permission.getClazz(), permission.getName(), permission.getAction());
+                        }
+                        String access = container instanceof Allow ? ConditionalPermissionInfo.ALLOW : ConditionalPermissionInfo.DENY;
+                        String name = container.getName() != null && !container.getName().isEmpty() ? container.getName() : "entry-" + container.hashCode();
+                        ConditionalPermissionInfo conditionalPermissionInfo = cpm.newConditionalPermissionInfo(name, conditions, permissions, access);
+                        System.out.println("Submiting " + url.getPath() + " access rule " + conditionalPermissionInfo);
+                        permissionInfos.add(conditionalPermissionInfo);
+                    }
                 }
             }
-
-            String condition = buffer.toString();
-            System.out.println("Submiting " + url + " access rule " + condition);
-            update.getConditionalPermissionInfos().add(cpm.newConditionalPermissionInfo(condition));
         }
 
         if (!update.commit()) {

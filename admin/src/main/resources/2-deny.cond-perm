@@ -1,5 +1,0 @@
-DENY {
-    [org.osgi.service.condpermadmin.BundleLocationCondition "mvn:org.code-house.cpm/org.code-house.cpm.test/*"]
-    (org.osgi.framework.ServicePermission "javax.servlet.http.HttpServlet" "get")
-    (org.osgi.framework.ServicePermission "org.osgi.service.blueprint.container.BlueprintContainer" "get")
-} "Deny non-authorized users access to Servlets"

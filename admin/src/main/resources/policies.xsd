@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://code-house.org/cpm/admin"
+    xmlns:tns="http://code-house.org/cpm/admin" elementFormDefault="qualified">
+
+    <complexType name="policies">
+        <sequence>
+            <element name="policy" type="tns:policy" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="policy">
+        <choice minOccurs="0" maxOccurs="unbounded">
+            <element name="allow" type="tns:allow" />
+            <element name="deny" type="tns:deny" />
+        </choice>
+    </complexType>
+
+    <complexType name="allow">
+        <complexContent>
+            <extension base="tns:conditionContainer" />
+        </complexContent>
+    </complexType>
+
+    <complexType name="deny">
+        <complexContent>
+            <extension base="tns:conditionContainer" />
+        </complexContent>
+    </complexType>
+
+    <complexType name="conditionContainer" abstract="true">
+        <sequence>
+            <element name="condition" type="tns:condition" minOccurs="0" maxOccurs="unbounded" />
+            <element name="permission" type="tns:permission" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="name" type="string" use="optional" />
+    </complexType>
+
+    <complexType name="condition">
+        <sequence>
+            <element name="argument" type="string" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="class" type="string" use="required" />
+    </complexType>
+
+    <complexType name="permission">
+        <sequence>
+            <element name="name" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="action" type="string" minOccurs="0" maxOccurs="1" />
+        </sequence>
+        <attribute name="class" type="string" use="required" />
+    </complexType>
+
+    <element name="policies" type="tns:policies" />
+
+</schema>

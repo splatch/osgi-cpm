@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<policies xmlns="http://code-house.org/cpm/admin"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://code-house.org/cpm/admin policies.xsd">
+    <policy>
+        <allow>
+            <condition class="org.osgi.service.condpermadmin.BundleLocationCondition">
+                <argument>mvn:org.code-house.cpm/org.code-house.cpm.test/*</argument>
+            </condition>
+            <condition class="org.code_house.cpm.condition.PrincipalCondition">
+                <argument>org.apache.karaf.jaas.boot.principal.RolePrincipal</argument>
+                <argument>role_admin</argument>
+            </condition>
+            <permission class="org.osgi.framework.ServicePermission">
+                <name>javax.servlet.http.HttpServlet</name>
+                <action>get</action>
+            </permission>
+        </allow>
+        <deny>
+            <condition class="org.osgi.service.condpermadmin.BundleLocationCondition">
+                <argument>mvn:org.code-house.cpm/org.code-house.cpm.test/*</argument>
+            </condition>
+            <permission class="org.osgi.framework.ServicePermission">
+                <name>*</name>
+                <action>get</action>
+            </permission>
+        </deny>
+        <allow>
+            <permission class="java.security.AllPermission">
+                <name>*</name>
+                <action>*</action>
+            </permission>
+        </allow>
+    </policy>
+
+</policies>

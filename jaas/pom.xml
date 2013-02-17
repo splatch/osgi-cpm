@@ -23,6 +23,7 @@
                     <instructions>
                         <Import-Package>
                             org.apache.karaf.jaas.config,
+                            org.apache.karaf.jaas.modules.properties,
                             *
                         </Import-Package>
                     </instructions>

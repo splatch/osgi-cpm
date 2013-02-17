@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.security.PrivilegedActionException;
 
 import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
@@ -12,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.service.blueprint.container.BlueprintContainer;
+import org.osgi.service.cm.ManagedService;
 
 public class LoginServlet extends HttpServlet {
 
@@ -26,12 +31,10 @@ public class LoginServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         try {
-            LoginContext loginContext = new LoginContext("unix");
+            final String username = req.getParameter("username");
+            final String password = req.getParameter("password");
 
-            // callback handler - not used with Unix login module
-            //final String username = req.getParameter("username");
-            //final String password = req.getParameter("password");
-            /*, new CallbackHandler() {
+            LoginContext loginContext = new LoginContext("test", new CallbackHandler() {
                 public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                     for (Callback callback : callbacks) {
                         if (callback instanceof NameCallback) {
@@ -43,11 +46,11 @@ public class LoginServlet extends HttpServlet {
                         }
                     }
                 }
-            })*/;
+            });
 
             loginContext.login();
 
-            ListServicesAction action = new ListServicesAction(context, HttpServlet.class, BlueprintContainer.class);
+            ListServicesAction action = new ListServicesAction(context, HttpServlet.class, ManagedService.class);
 
             try {
                 resp.getWriter().write("Action executed without security context");
@@ -56,6 +59,22 @@ public class LoginServlet extends HttpServlet {
                 e.printStackTrace(resp.getWriter());
             }
             resp.getWriter().write("--------\n");
+//
+//            try {
+//                resp.getWriter().write("Action executed without subject");
+//                resp.getWriter().write(AccessController.doPrivileged(action));
+//            } catch (Exception e) {
+//                e.printStackTrace(resp.getWriter());
+//            }
+//            resp.getWriter().write("--------\n");
+//
+//            try {
+//                resp.getWriter().write("Action executed without subject with combiner");
+//                resp.getWriter().write(AccessController.doPrivilegedWithCombiner(action));
+//            } catch (Exception e) {
+//                e.printStackTrace(resp.getWriter());
+//            }
+//            resp.getWriter().write("--------\n");
 
             try {
                 resp.getWriter().write("Action executed normally");
@@ -65,12 +84,12 @@ public class LoginServlet extends HttpServlet {
             }
             resp.getWriter().write("--------\n");
 
-            try {
-                resp.getWriter().write("Action executed as subject");
-                resp.getWriter().write(Subject.doAsPrivileged(loginContext.getSubject(), action, null));
-            } catch (PrivilegedActionException e) {
-                e.printStackTrace(resp.getWriter());
-            }
+//            try {
+//                resp.getWriter().write("Action executed as subject");
+//                resp.getWriter().write(Subject.doAsPrivileged(loginContext.getSubject(), action, null));
+//            } catch (PrivilegedActionException e) {
+//                e.printStackTrace(resp.getWriter());
+//            }
 
             loginContext.logout();
         } catch (LoginException e) {
