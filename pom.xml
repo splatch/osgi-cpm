@@ -16,6 +16,7 @@
     </properties>
 
     <modules>
+        <module>command</module>
         <module>condition</module>
         <module>admin</module>
         <module>test</module>
