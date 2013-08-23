@@ -8,11 +8,12 @@ Principals logged by JAAS-unix login module should have access to servlets but s
 
 ## Modules overview
 
-* [condition](tree/master/condition) Simple condition to verify Subject presence
-* [admin](tree/master/admin) Administration module which deploy conditional access rules
-* [test](tree/master/test) Test module deploying HttpServlet at /login path which initialize LoginConfiguration and print service details.
-* [features](tree/master/features) Karaf features descriptor.
-* [jaas](tree/master/jaas) JAAS modules for test purposes.
+
+* [condition](condition) Simple condition to verify Subject presence
+* [admin](admin) Administration module which deploy conditional access rules
+* [test](test) Test module deploying HttpServlet at /login path which initialize LoginConfiguration and print service details.
+* [features](features) Karaf features descriptor.
+* [jaas](jaas) JAAS modules for test purposes.
  
 
 ### Installation
